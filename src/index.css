@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Basic global resets / utilities you can extend later */
+:root {
+  --container-px: 1rem;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+.container {
+  max-width: 1200px;
+  padding-left: var(--container-px);
+  padding-right: var(--container-px);
+}
