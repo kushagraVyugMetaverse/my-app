@@ -1,25 +1,23 @@
+// tailwind.config.cjs
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./index.html', './src/**/*.{ts,tsx,js,jsx}'],
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx,vue}"
+  ],
   theme: {
     extend: {
       colors: {
-        primary: '#2563EB', // replace with Figma primary
-        secondary: '#10B981',
-        accent: '#F59E0B',
+        credd: {
+          primaryFrom: "#9DD329",
+          primaryTo:   "#2D8113",
+          neon:        "#AEFF00"
+        }
       },
       fontFamily: {
-        sans: ['Inter', 'ui-sans-serif', 'system-ui'],
-      },
-      container: {
-        center: true,
-        padding: {
-          DEFAULT: '1rem',
-          md: '1.5rem',
-          lg: '2rem',
-        },
-      },
-    },
+        inter: ["Inter", "ui-sans-serif", "system-ui"]
+      }
+    }
   },
-  plugins: [],
-}
+  plugins: []
+};
