@@ -1,4 +1,6 @@
+// apps/web/src/components/Hero.tsx
 import React from "react";
+
 import TopGlow from "../assets/bg-top-glow.png";
 import BottomGlow from "../assets/bg-bottom-glow.png";
 import DotCenter from "../assets/bg-dotgrid-center.svg";
@@ -11,19 +13,18 @@ import EllipseTrending from "../assets/ellipse-trending.svg";
 
 /**
  * Hero.tsx
- * - All images are positioned absolutely inside a centered relative container.
- * - Adjust the tailwind classes below if your design size differs.
+ * - Use `.src` on imported images so <img src={...}> receives a string (fixes TS types).
  */
 
 export default function Hero() {
+
   return (
     <section className="relative w-full overflow-hidden hero-container bg-black">
-      {/* container constrains hero width and centers content */}
       <div className="max-w-[1280px] mx-auto relative px-6 lg:px-8 pt-10">
         {/* TOP GLOW */}
         <img
-          src={TopGlow}
-          alt=""
+          src={TopGlow.src}
+          alt="top glow"
           data-decorative="true"
           className="pointer-events-none absolute left-1/2 transform -translate-x-1/2 top-0 w-[90%] max-w-[1400px] opacity-95"
           style={{ mixBlendMode: "screen" }}
@@ -31,7 +32,7 @@ export default function Hero() {
 
         {/* DOT GRID (top) */}
         <img
-          src={DotTop}
+          src={DotTop.src}
           alt=""
           data-decorative="true"
           className="pointer-events-none absolute left-1/2 -translate-x-1/2 top-[58px] w-[56%] opacity-60"
@@ -39,16 +40,16 @@ export default function Hero() {
 
         {/* CENTER gradient / bright strip */}
         <img
-          src={GradientEllipse}
-          alt=""
+          src={GradientEllipse.src}
+          alt="center gradient"
           data-decorative="true"
           className="pointer-events-none absolute left-1/2 -translate-x-1/2 top-[240px] w-[80%] max-w-[1100px] opacity-95"
           style={{ filter: "blur(1px)" }}
         />
 
-        {/* LEFT PHONE (use transform to match figma) */}
+        {/* LEFT PHONE */}
         <img
-          src={PhoneLeft}
+          src={PhoneLeft.src}
           alt="phone left"
           className="absolute left-[2%] top-[220px] w-[340px] md:w-[420px] transform -rotate-[6deg] drop-shadow-2xl z-20"
           style={{ willChange: "transform" }}
@@ -56,14 +57,14 @@ export default function Hero() {
 
         {/* RIGHT PHONE */}
         <img
-          src={PhoneRight}
+          src={PhoneRight.src}
           alt="phone right"
           className="absolute right-[2%] top-[220px] w-[340px] md:w-[420px] transform rotate-[8deg] drop-shadow-2xl z-20"
         />
 
         {/* DOT GRID (center / main) */}
         <img
-          src={DotCenter}
+          src={DotCenter.src}
           alt=""
           data-decorative="true"
           className="pointer-events-none absolute left-1/2 -translate-x-1/2 top-[360px] w-[85%] opacity-60 z-10"
@@ -96,9 +97,9 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* BOTTOM MASK / subtract shape for the dark fade */}
+        {/* BOTTOM MASK / subtract shape */}
         <img
-          src={MaskSubtract}
+          src={MaskSubtract.src}
           alt=""
           data-decorative="true"
           className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-[120px] w-[110%] opacity-95 z-5"
@@ -106,15 +107,19 @@ export default function Hero() {
 
         {/* bottom glow */}
         <img
-          src={BottomGlow}
-          alt=""
+          src={BottomGlow.src}
+          alt="bottom glow"
           data-decorative="true"
           className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-0 w-[110%] opacity-95 z-0"
         />
 
-        {/* Trending ellipse / text (small) */}
+        {/* Trending ellipse / text */}
         <div className="relative z-40 text-center mt-[56px] mb-24">
-          <img src={EllipseTrending} alt="" className="mx-auto w-[60%] max-w-[1100px] opacity-0" />
+          <img
+            src={EllipseTrending.src}
+            alt=""
+            className="mx-auto w-[60%] max-w-[1100px] opacity-0"
+          />
           <p className="text-sm text-white/60">Trending coins</p>
 
           <div className="mt-6 text-white/60 flex gap-8 justify-center items-center">
