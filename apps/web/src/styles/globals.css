@@ -1,0 +1,337 @@
+/* src/index.css - Tailwind + custom base (FIXED: removed @apply usage) */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* load Inter from Google */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root{
+  --neon: #AEFF00;
+  --primary-from: #9DD329;
+  --primary-to: #2D8113;
+}
+
+/* base typography */
+html,body,#root{
+  height:100%;
+}
+body{
+  background-color: #000;
+  color: #fff;
+  font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* ------ HERO styles ------ */
+.hero{
+  position:relative;
+  min-height: calc(100vh - 0px);
+  overflow:hidden;
+  background: #000;
+  display:block;
+}
+
+/* background stacking container
+   NOTE: z-index raised so children (glow/dots) can appear ABOVE the vignette sibling */
+.hero__bg{
+  position:absolute;
+  inset:0;
+  overflow:hidden;
+  z-index:6; /* must be greater than vignette z-index */
+  pointer-events:none;
+}
+
+/* === HERO: expanded top glow, masked dot-grid, correct stacking === */
+
+/* --- TOP GLOW / ELLIPSES (expanded to full-width elliptical dome) --- */
+.hero__top-ellipse,
+.hero__top-ellipse-2,
+.hero__top-ellipse-3{
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  mix-blend-mode:screen;
+  pointer-events:none;
+  z-index: 12; /* above dots and center gradient so glow dominates */
+  opacity:1;
+}
+
+/* Make the primary top glow very wide/tall to create the dome effect */
+.hero__top-ellipse  {
+  top: -320px;
+  width: 2200px;           /* wide so ellipse spans hero */
+  height: 1200px;          /* allows true elliptical shape when blurred */
+  object-fit: cover;
+  opacity:0.98;
+  filter: blur(120px) saturate(130%);
+  transform: translateX(-50%) scaleX(1.0);
+}
+.hero__top-ellipse-2{
+  top: -240px;
+  width: 1400px;
+  height: 850px;
+  opacity:0.90;
+  filter: blur(90px) saturate(120%);
+}
+.hero__top-ellipse-3{
+  top: -180px;
+  width: 1000px;
+  height: 700px;
+  opacity:0.78;
+  filter: blur(60px) saturate(110%);
+}
+
+/* responsive scaling for the oversized ellipses */
+@media (max-width: 1200px){
+  .hero__top-ellipse  { top:-200px; width: 1400px; height: 800px; filter: blur(90px); }
+  .hero__top-ellipse-2{ top:-150px; width: 1000px; height: 600px; filter: blur(60px); }
+  .hero__top-ellipse-3{ top:-90px;  width: 700px;  height: 420px; filter: blur(40px); }
+}
+
+/* ---------- DOT GRID: visible inside the glow dome (Figma alignment) ---------- */
+
+/* Group wrapper: centered and masked to the glow dome shape.
+   The mask shows the dots in the center ellipse and fades them out toward edges.
+   Slightly increase opacity and remove aggressive blending so SVG dots remain visible. */
+.hero__grouped-dots,
+.hero__dot-top {
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  top: 40px;                /* move down a little to sit under the bright dome */
+  width: 1701px;
+  max-width:1701px;
+  z-index: 9;               /* below top ellipses (12) but above phones (4) */
+  pointer-events:none;
+  opacity:0.85;            /* more visible inside glow */
+  mix-blend-mode: normal;  /* normal keeps SVG's native contrast; screen can wash them out */
+  transition: opacity .25s ease;
+  /* mask: show full opacity in the central ellipse then fade smoothly */
+  -webkit-mask-image: radial-gradient(ellipse at top center,
+    rgba(0,0,0,1) 0%,
+    rgba(0,0,0,0.95) 25%,
+    rgba(0,0,0,0.65) 50%,
+    rgba(0,0,0,0.18) 75%,
+    rgba(0,0,0,0) 100%);
+  mask-image: radial-gradient(ellipse at top center,
+    rgba(0,0,0,1) 0%,
+    rgba(0,0,0,0.95) 25%,
+    rgba(0,0,0,0.65) 50%,
+    rgba(0,0,0,0.18) 75%,
+    rgba(0,0,0,0) 100%);
+  filter: blur(0.8px) contrast(1.05) brightness(1.02);
+}
+
+/* Keep an alternate selector so older .hero__dot-top still works */
+.hero__dot-top svg, .hero__grouped-dots svg {
+  width: 100%;
+  height: auto;
+  display:block;
+}
+
+/* the individual grouped dot pieces (left / center / right) */
+.grouped-dot-left,
+.grouped-dot-center,
+.grouped-dot-right {
+  position:absolute;
+  top:0;
+  width: auto;
+  height: auto;
+  pointer-events:none;
+  opacity:0.88;
+  filter: blur(0.6px) brightness(1.05);
+  mix-blend-mode: screen; /* subtle lightening when overlapping glow */
+  transition: transform .25s ease, left .25s ease;
+}
+
+/* Horizontal placement relative to group (tweak numbers if small nudge required) */
+.grouped-dot-left{ left: -760px; }   /* nudged inward vs earlier -820 */
+.grouped-dot-center{ left: 50%; transform: translateX(-50%); } /* center piece exact center */
+.grouped-dot-right{ left: 760px; }  /* symmetric to left */
+
+/* --- ADDITIONAL DOT ROW (lower center row) - fade further down ---
+   Keep previous selector .hero__dot-center in place for compatibility.
+*/
+.hero__dot-center{
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  top: 240px;                /* slightly lower to sit under phones like Figma */
+  width: 1100px;
+  max-width:1200px;
+  z-index:9;
+  pointer-events:none;
+  opacity:0.55;             /* less visible than top grouped grid */
+  mix-blend-mode: screen;
+  -webkit-mask-image: linear-gradient(to bottom,
+    rgba(0,0,0,1) 0%,
+    rgba(0,0,0,0.6) 40%,
+    rgba(0,0,0,0.15) 75%,
+    rgba(0,0,0,0) 100%);
+  mask-image: linear-gradient(to bottom,
+    rgba(0,0,0,1) 0%,
+    rgba(0,0,0,0.6) 40%,
+    rgba(0,0,0,0.15) 75%,
+    rgba(0,0,0,0) 100%);
+  filter: blur(0.6px) contrast(1.02);
+}
+
+/* small responsive tweaks so dots remain in the dome on narrower screens */
+@media (max-width: 1400px) {
+  .hero__grouped-dots,
+  .hero__dot-top { width: 1200px; left:50%; transform:translateX(-50%); top: 28px; }
+  .grouped-dot-left{ left: -520px; }
+  .grouped-dot-right{ left: 520px; }
+  .hero__dot-center{ width: 900px; top: 220px; opacity:0.5; }
+}
+
+@media (max-width: 1024px) {
+  .hero__grouped-dots,
+  .hero__dot-top { width: 900px; top: 18px; opacity:0.75; -webkit-mask-image: none; mask-image: none; }
+  .grouped-dot-left{ left: -360px; }
+  .grouped-dot-right{ left: 360px; }
+  .hero__dot-center{ display:block; width: 700px; top: 200px; opacity:0.45; -webkit-mask-image: none; mask-image:none; }
+}
+
+/* --- CENTER GREEN GRADIENT & COMPOSITE GLOW - raise above dots so they fade under it --- */
+.hero__center-gradient{
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  top:36%;
+  width:80%;
+  max-width:1600px; /* allow wider center glow */
+  height:auto;
+  z-index:13;       /* above dot grid so dots fade where the gradient is strongest */
+  opacity:0.98;
+  mix-blend-mode:screen;
+  pointer-events:none;
+  filter: blur(36px) saturate(120%);
+}
+
+/* phones container and phones */
+.hero__phones{ position:absolute; inset:0; z-index:4; pointer-events:none; }
+.hero__phone-left,
+.hero__phone-right{
+  position:absolute;
+  width: 520px;
+  max-width:30%;
+  z-index:5;
+  image-rendering:optimizeQuality;
+}
+
+/* tuned left/right positions - adjust if needed */
+.hero__phone-left{
+  left:6%;
+  top:40%;
+  transform: translateY(-40%) rotate(-8deg);
+}
+.hero__phone-right{
+  right:6%;
+  top:26%;
+  transform: translateY(-12%) rotate(8deg);
+}
+
+/* bottom subtract mask */
+.hero__mask-bottom{
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  bottom:-6%;
+  width:120%;
+  z-index:6; /* ensure bottom mask sits above bottom glow but under content */
+  opacity:1;
+  pointer-events:none;
+}
+
+/* bottom glow */
+.hero__bottom-glow{
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  bottom:-6%;
+  width:120%;
+  z-index:5;
+  opacity:0.9;
+  pointer-events:none;
+}
+
+/* vignette overlay for contrast
+   Keep vignette below hero__bg so glow shows above it.
+*/
+.hero__vignette{
+  position:absolute;
+  inset:0;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 70%, rgba(0,0,0,0.9) 100%);
+  z-index:4; /* lower than hero__bg (6) so glow/dots inside hero__bg are visible */
+  pointer-events:none;
+}
+
+/* content area (heading/buttons) */
+.hero__content{
+  position:relative;
+  z-index:20;
+  max-width:1200px;
+  margin:0 auto;
+  padding-top:80px;
+  text-align:center;
+}
+
+/* badge */
+.hero__badge{
+  display:inline-flex;
+  gap:.6rem;
+  background:transparent;
+  border-radius:24px;
+  border:1px solid rgba(255,255,255,0.06);
+  padding:8px 18px;
+  align-items:center;
+  justify-content:center;
+  font-size:.95rem;
+  color:rgba(255,255,255,0.94);
+  box-shadow: 0 6px 24px rgba(0,0,0,0.4);
+  backdrop-filter: blur(4px);
+}
+
+/* title fine tuning */
+.hero__title{
+  margin-top:18px;
+  color:rgba(255,255,255,0.95);
+  font-weight:500;
+}
+
+/* neon button */
+.btn-neon{
+  background: linear-gradient(180deg,var(--primary-from), var(--primary-to));
+  color:#06120a;
+  border-radius:28px;
+  padding:12px 26px;
+  box-shadow: 0 8px 30px rgba(45,129,19,0.45), 0 0 28px rgba(174,255,0,0.16);
+  border: 1px solid rgba(174,255,0,0.22);
+  font-weight:600;
+}
+
+/* ghost button */
+.btn-ghost{
+  background:transparent;
+  color: #ddd;
+  border:1px solid rgba(255,255,255,0.12);
+  padding:10px 20px;
+  border-radius:24px;
+}
+
+/* trending row bottom */
+.trending{
+  position:relative;
+  z-index:20;
+  margin-top:8rem;
+}
+
+@media (max-width: 1024px){
+  .hero__phone-left, .hero__phone-right{ width:300px; }
+  .hero__top-ellipse { width: 900px; top:-160px; }
+  .hero__title { font-size:36px; }
+  .hero__center-gradient{ width:95%;}
+}
