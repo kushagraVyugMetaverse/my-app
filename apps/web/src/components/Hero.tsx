@@ -1,11 +1,8 @@
 // apps/web/src/components/Hero.tsx
 import React from "react";
 
-import TopGlow from "../assets/bg-top-glow.png";
+import TopGlowDots from "../assets/bg-top-glow-dots.png";
 import BottomGlow from "../assets/bg-bottom-glow.png";
-import DotCenter from "../assets/bg-dotgrid-center.svg";
-import DotTop from "../assets/bg-dotgrid-top.svg";
-import GradientEllipse from "../assets/green-gradient-ellipse.png";
 import PhoneLeft from "../assets/phone-left.svg";
 import PhoneRight from "../assets/phone-right.svg";
 import MaskSubtract from "../assets/mask-bottom-subtract.svg";
@@ -13,65 +10,47 @@ import EllipseTrending from "../assets/ellipse-trending.svg";
 
 /**
  * Hero.tsx
- * - Use `.src` on imported images so <img src={...}> receives a string (fixes TS types).
+ * - Uses the combined glow+dots asset: bg-top-glow-dots.png
+ * - Keeps the existing structure/logic; only ensures the top asset is used and layered correctly.
+ *
+ * Make sure: apps/web/src/assets/bg-top-glow-dots.png exists (case-sensitive).
  */
 
 export default function Hero() {
-
   return (
     <section className="relative w-full overflow-hidden hero-container bg-black">
       <div className="max-w-[1280px] mx-auto relative px-6 lg:px-8 pt-10">
-        {/* TOP GLOW */}
+
+        {/** TOP GLOW + DOTS — combined asset */}
         <img
-          src={TopGlow.src}
-          alt="top glow"
+          src={TopGlowDots.src}
+          alt="top glow with dots"
           data-decorative="true"
-          className="pointer-events-none absolute left-1/2 transform -translate-x-1/2 top-0 w-[90%] max-w-[1400px] opacity-95"
-          style={{ mixBlendMode: "screen" }}
+          className="hero__top-combined pointer-events-none"
+          style={{
+            // Inline tuning to make the dome position consistent across browsers
+            // (the main look is driven by .hero__top-combined in global.css).
+            zIndex: 14,
+          }}
         />
 
-        {/* DOT GRID (top) */}
-        <img
-          src={DotTop.src}
-          alt=""
-          data-decorative="true"
-          className="pointer-events-none absolute left-1/2 -translate-x-1/2 top-[58px] w-[56%] opacity-60"
-        />
-
-        {/* CENTER gradient / bright strip */}
-        <img
-          src={GradientEllipse.src}
-          alt="center gradient"
-          data-decorative="true"
-          className="pointer-events-none absolute left-1/2 -translate-x-1/2 top-[240px] w-[80%] max-w-[1100px] opacity-95"
-          style={{ filter: "blur(1px)" }}
-        />
-
-        {/* LEFT PHONE */}
+        {/** PHONES (below glow/dots) */}
         <img
           src={PhoneLeft.src}
           alt="phone left"
-          className="absolute left-[2%] top-[220px] w-[340px] md:w-[420px] transform -rotate-[6deg] drop-shadow-2xl z-20"
-          style={{ willChange: "transform" }}
+          className="hero__phone-left"
+          style={{ zIndex: 11 }}
         />
 
-        {/* RIGHT PHONE */}
         <img
           src={PhoneRight.src}
           alt="phone right"
-          className="absolute right-[2%] top-[220px] w-[340px] md:w-[420px] transform rotate-[8deg] drop-shadow-2xl z-20"
+          className="hero__phone-right"
+          style={{ zIndex: 11 }}
         />
 
-        {/* DOT GRID (center / main) */}
-        <img
-          src={DotCenter.src}
-          alt=""
-          data-decorative="true"
-          className="pointer-events-none absolute left-1/2 -translate-x-1/2 top-[360px] w-[85%] opacity-60 z-10"
-        />
-
-        {/* HERO TEXT + badge + buttons (center block) */}
-        <div className="relative z-30 text-center mt-8">
+        {/** HERO CONTENT (on top of the glow/dots) */}
+        <div className="relative z-20 text-center mt-8" style={{ paddingTop: "40px" }}>
           <div className="inline-block px-4 py-1 rounded-full border border-[#2f2f2f] bg-black/40 text-sm text-white/80 shadow-md">
             <span className="text-[14px] font-medium text-[#A8FF00]">Credd'X</span>
             <span className="text-[13px] ml-2 text-white/80">- X Times Better Trading →</span>
@@ -97,29 +76,27 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* BOTTOM MASK / subtract shape */}
+        {/** BOTTOM MASK / HEAVY VIGNETTE */}
         <img
           src={MaskSubtract.src}
-          alt=""
+          alt="mask bottom subtract"
           data-decorative="true"
-          className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-[120px] w-[110%] opacity-95 z-5"
+          className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-[120px] w-[110%]"
+          style={{ opacity: 0.95, zIndex: 12 }}
         />
 
-        {/* bottom glow */}
+        {/** bottom glow (subtle) */}
         <img
           src={BottomGlow.src}
           alt="bottom glow"
           data-decorative="true"
-          className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-0 w-[110%] opacity-95 z-0"
+          className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-0 w-[110%]"
+          style={{ opacity: 0.95, zIndex: 6 }}
         />
 
-        {/* Trending ellipse / text */}
-        <div className="relative z-40 text-center mt-[56px] mb-24">
-          <img
-            src={EllipseTrending.src}
-            alt=""
-            className="mx-auto w-[60%] max-w-[1100px] opacity-0"
-          />
+        {/** Trending ellipse (kept but not visible by default) */}
+        <div className="relative z-20 text-center mt-[56px] mb-24">
+          <img src={EllipseTrending.src} alt="" className="mx-auto w-[60%] max-w-[1100px] opacity-0" />
           <p className="text-sm text-white/60">Trending coins</p>
 
           <div className="mt-6 text-white/60 flex gap-8 justify-center items-center">
